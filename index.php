@@ -11,7 +11,7 @@ try {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Grocery Shop</title>
+    <title>My Grocery Shopa at jaupur</title>
     <link rel="stylesheet" href="assets/css/style.css"> <!-- Your CSS -->
 </head>
 <body>

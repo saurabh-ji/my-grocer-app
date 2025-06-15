@@ -1,0 +1,1127 @@
+
+The user wants a website frame and template for a grocery app, following the detailed app guidelines for a modern interactive game application, but adapted to a grocery app context. The main guidelines include:
+
+- Fully responsive, modern UI with:
+  - Header: showing score, level, lives/health, timer replaced by relevant grocery app info like cart summary, search bar, user profile
+  - Main: main content area with product display grid or list
+  - Sidebar: controls explanation, power-ups, achievements replaced by filters, categories, shopping list, or promotions (collapsible)
+  - Bottom: action buttons like cart, checkout, settings
+- Use modern material icons from google fonts
+- Use placeholder images from placehold.co with descriptive alt text
+- Use a single HTML file with inline CSS and JS
+- Implement a clean, modern, breathable UI with proper spacing and no overlapping elements
+- The final product is a grocery app website frame and template that showcases product browsing with a modern look
+
+Plan:
+- Create a single HTML file "grocery-app.html"
+- Header with logo, search bar, cart summary (items count and total)
+- Sidebar collapsible for categories and filters
+- Main content area: product grid with placeholder images and product cards
+- Bottom sticky action bar with buttons for cart, checkout, and settings (using material icons)
+- Responsive layout with single column on mobile, sidebar on tablet and desktop
+- Use Google Material Icons via CDN
+- Use placeholder images from placehold.co with detailed alt text
+- Smooth modern UI design referencing the app guidelines but simplified for a grocery app
+- Include minimal JS for sidebar toggle and maybe cart count update simulation
+- Use modern typography (Inter from Google Fonts)
+- Include keyboard, mouse, and touch friendly UI controls
+
+No backend is required; it's a frame and template only.
+
+Dependent files: None (single file)
+Follow-up: The user can open the file in browser to view the grocery app template frame.
+
+I will proceed to create this single HTML file with all CSS and JS inline.
+
+
+`grocery-app.html`
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Modern Grocery App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    /* Reset and base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #f9fafb;
+      color: #111827;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      height: 100vh;
+      overflow: hidden;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    /* Layout: grid with header, sidebar, main, bottom bar */
+    .app-container {
+      display: grid;
+      grid-template-columns: 0 1fr; /* sidebar initially collapsed */
+      grid-template-rows: auto 1fr auto;
+      grid-template-areas:
+        "header header"
+        ". main"
+        "bottom bottom";
+      height: 100vh;
+      transition: grid-template-columns 0.3s ease;
+      overflow: hidden;
+    }
+    .app-container.sidebar-open {
+      grid-template-columns: 280px 1fr;
+      grid-template-areas:
+        "header header"
+        "sidebar main"
+        "bottom bottom";
+    }
+    header {
+      grid-area: header;
+      background: #2563eb;
+      color: white;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .logo {
+      font-weight: 700;
+      font-size: 1.5rem;
+      user-select: none;
+    }
+    .search-bar {
+      flex: 1 1 auto;
+      margin: 0 24px;
+      position: relative;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 10px 40px 10px 16px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      outline-offset: 2px;
+      box-shadow: 0 0 6px rgb(37 99 235 / 0.4);
+    }
+    .search-bar .material-icons {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #3b82f6;
+      cursor: pointer;
+      user-select: none;
+    }
+    .cart-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      position: relative;
+      user-select: none;
+    }
+    .cart-info .material-icons {
+      font-size: 28px;
+    }
+    .cart-count {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: #ef4444;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 4px rgb(239 68 68 / 0.7);
+    }
+    /* Sidebar */
+    aside.sidebar {
+      grid-area: sidebar;
+      background: #1e40af;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      overflow-y: auto;
+      user-select: none;
+    }
+    aside.sidebar h2 {
+      font-size: 1.25rem;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+    .categories, .filters {
+      margin-bottom: 32px;
+    }
+    .categories ul, .filters ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .categories li, .filters li {
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: background-color 0.25s ease;
+      user-select: none;
+      font-weight: 500;
+    }
+    .categories li:hover, .filters li:hover {
+      background: #2563eb;
+    }
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 28px;
+      padding: 8px;
+      margin-bottom: 24px;
+      cursor: pointer;
+      align-self: flex-end;
+      user-select: none;
+    }
+    /* Main */
+    main {
+      grid-area: main;
+      overflow-y: auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
+      gap: 24px;
+      background: #f3f4f6;
+    }
+    .product-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 16px rgb(0 0 0 / 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow 0.3s ease;
+    }
+    .product-card:hover {
+      box-shadow: 0 12px 24px rgb(37 99 235 / 0.3);
+      transform: translateY(-4px);
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+    .product-image {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      user-select: none;
+    }
+    .product-info {
+      padding: 16px;
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .product-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      color: #1f2937;
+      min-height: 44px;
+    }
+    .product-description {
+      font-size: 0.875rem;
+      color: #6b7280;
+      flex-grow: 1;
+      margin-bottom: 12px;
+    }
+    .product-price {
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: #2563eb;
+    }
+    /* Bottom bar with action buttons */
+    .bottom-bar {
+      grid-area: bottom;
+      background: #2563eb;
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      padding: 12px 0;
+      box-shadow: 0 -2px 8px rgb(0 0 0 / 0.15);
+      position: sticky;
+      bottom: 0;
+      user-select: none;
+      z-index: 10;
+    }
+    .bottom-bar button {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      min-width: 64px;
+      transition: color 0.3s ease;
+    }
+    .bottom-bar button:hover {
+      color: #3b82f6;
+    }
+    .bottom-bar button span {
+      font-size: 12px;
+      font-weight: 600;
+      user-select: none;
+    }
+    /* Responsive */
+    @media screen and (max-width: 1024px) {
+      .app-container.sidebar-open {
+        grid-template-columns: 220px 1fr;
+      }
+      aside.sidebar {
+        padding: 16px;
+      }
+      main {
+        padding: 16px;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fill,minmax(180px,1fr));
+      }
+      .product-image {
+        height: 140px;
+      }
+    }
+    @media screen and (max-width: 640px) {
+      .app-container, .app-container.sidebar-open {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "header"
+          "main"
+          "bottom";
+      }
+      aside.sidebar {
+        position: fixed;
+        top: 64px;
+        left: 0;
+        bottom: 56px;
+        width: 240px;
+        background: #1e40af;
+        padding: 16px;
+        transform: translateX(-260px);
+        transition: transform 0.3s ease;
+        z-index: 30;
+      }
+      .app-container.sidebar-open aside.sidebar {
+        transform: translateX(0);
+      }
+      header {
+        padding: 0 16px;
+      }
+      .search-bar {
+        margin: 0 12px;
+      }
+      main {
+        padding: 16px 12px;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .product-image {
+        height: 120px;
+      }
+      .bottom-bar {
+        padding: 8px 0;
+        gap: 16px;
+      }
+      .bottom-bar button {
+        font-size: 24px;
+        min-width: 48px;
+      }
+    }
+    /* Scroll bar style for sidebar */
+    aside.sidebar::-webkit-scrollbar {
+      width: 8px;
+    }
+    aside.sidebar::-webkit-scrollbar-thumb {
+      background: #2563eb;
+      border-radius: 4px;
+    }
+    /* Focus outline */
+    input:focus,
+    button:focus,
+    li:focus {
+      outline-offset: 2px;
+      outline: 2px solid #93c5fd;
+      outline-offset: 3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container" id="appContainer">
+    <header>
+      <button class="material-icons sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar" title="Toggle sidebar">menu</button>
+      <div class="logo" aria-label="Grocery App Logo" role="heading" aria-level="1">FreshMart</div>
+      <div class="search-bar" role="search">
+        <input type="search" id="searchInput" placeholder="Search groceries..." aria-label="Search groceries" />
+        <span class="material-icons" id="searchIcon" aria-hidden="true">search</span>
+      </div>
+      <div class="cart-info" role="button" tabindex="0" aria-label="View cart with 0 items">
+        <span class="material-icons" aria-hidden="true">shopping_cart</span>
+        <div class="cart-count" id="cartCount" aria-live="polite" aria-atomic="true">0</div>
+      </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar" aria-label="Product categories and filters" hidden>
+      <button class="material-icons sidebar-toggle" id="sidebarClose" aria-label="Close sidebar" title="Close sidebar">close</button>
+      <section class="categories" aria-label="Product categories">
+        <h2>Categories</h2>
+        <ul>
+          <li tabindex="0">Fruits</li>
+          <li tabindex="0">Vegetables</li>
+          <li tabindex="0">Dairy</li>
+          <li tabindex="0">Meat & Fish</li>
+          <li tabindex="0">Bakery</li>
+          <li tabindex="0">Snacks</li>
+          <li tabindex="0">Beverages</li>
+        </ul>
+      </section>
+      <section class="filters" aria-label="Filter options">
+        <h2>Filters</h2>
+        <ul>
+          <li tabindex="0">On Sale</li>
+          <li tabindex="0">Organic</li>
+          <li tabindex="0">New</li>
+          <li tabindex="0">Best Sellers</li>
+          <li tabindex="0">Gluten Free</li>
+        </ul>
+      </section>
+    </aside>
+
+    <main id="productGrid" tabindex="0" aria-label="Products listing">
+      <article class="product-card" tabindex="0" aria-label="Fresh Red Apples, price $3.99 per lb">
+        <img src="https://placehold.co/400x300/ef4444/ffffff?text=Fresh+Red+Apples" alt="Fresh Red Apples in a basket with bright red color" class="product-image" loading="lazy" />
+        <div class="product-info">
+          <h3 class="product-title">Fresh Red Apples</h3>
+          <p class="product-description">Crisp and juicy apples, perfect for snacking or baking.</p>
+          <div class="product-price" aria-label="Price 3.99 dollars per pound">$3.99 / lb</div>
+        </div>
+      </article>
+      <article class="product-card" tabindex="0" aria-label="Organic Bananas, price $1.29 per lb">
+        <img src="https://placehold.co/400x300/facc15/000000?text=Organic+Bananas" alt="Organic yellow bananas bunch on white background" class="product-image" loading="lazy" />
+        <div class="product-info">
+          <h3 class="product-title">Organic Bananas</h3>
+          <p class="product-description">Sweet and ripe organic bananas, perfect for smoothies and snacks.</p>
+          <div class="product-price" aria-label="Price 1.29 dollars per pound">$1.29 / lb</div>
+        </div>
+      </article>
+      <article class="product-card" tabindex="0" aria-label="Fresh Carrots, price $2.50 per bunch">
+        <img src="https://placehold.co/400x300/f97316/ffffff?text=Fresh+Carrots" alt="Bright orange fresh carrots with green tops" class="product-image" loading="lazy" />
+        <div class="product-info">
+          <h3 class="product-title">Fresh Carrots</h3>
+          <p class="product-description">Crunchy and sweet carrots sourced locally, packed with nutrients.</p>
+          <div class="product-price" aria-label="Price 2.50 dollars per bunch">$2.50 / bunch</div>
+        </div>
+      </article>
+      <article class="product-card" tabindex="0" aria-label="Whole Milk, price $4.50 per gallon">
+        <img src="https://placehold.co/400x300/3b82f6/ffffff?text=Whole+Milk" alt="Bottle of whole milk with blue cap" class="product-image" loading="lazy" />
+        <div class="product-info">
+          <h3 class="product-title">Whole Milk</h3>
+          <p class="product-description">Rich and creamy whole milk from grass-fed cows.</p>
+          <div class="product-price" aria-label="Price 4.50 dollars per gallon">$4.50 / gal</div>
+        </div>
+      </article>
+      <article class="product-card" tabindex="0" aria-label="Whole Wheat Bread, price $3.25 per loaf">
+        <img src="https://placehold.co/400x300/ca8a04/ffffff?text=Whole+Wheat+Bread" alt="Freshly baked whole wheat bread loaf" class="product-image" loading="lazy" />
+        <div class="product-info">
+          <h3 class="product-title">Whole Wheat Bread</h3>
+          <p class="product-description">Soft and healthy whole wheat bread perfect for sandwiches.</p>
+          <div class="product-price" aria-label="Price 3.25 dollars per loaf">$3.25 / loaf</div>
+        </div>
+      </article>
+      <article class="product-card" tabindex="0" aria-label="Sparkling Water, price $1.50 per bottle">
+        <img src="https://placehold.co/400x300/0ea5e9/ffffff?text=Sparkling+Water" alt="Clear bottle of sparkling water with bubbles" class="product-image" loading="lazy" />
+        <div class="product-info">
+          <h3 class="product-title">Sparkling Water</h3>
+          <p class="product-description">Refreshing sparkling water with a hint of natural minerals.</p>
+          <div class="product-price" aria-label="Price 1.50 dollars per bottle">$1.50 / bottle</div>
+        </div>
+      </article>
+    </main>
+
+    <nav class="bottom-bar" role="navigation" aria-label="Bottom action bar">
+      <button aria-label="View Cart" id="btnCart">
+        <span class="material-icons" aria-hidden="true">shopping_cart</span>
+        <span>Cart</span>
+      </button>
+      <button aria-label="Checkout" id="btnCheckout">
+        <span class="material-icons" aria-hidden="true">payment</span>
+        <span>Checkout</span>
+      </button>
+      <button aria-label="Settings" id="btnSettings">
+        <span class="material-icons" aria-hidden="true">settings</span>
+        <span>Settings</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    // Sidebar toggle for desktop and mobile
+    const appContainer = document.getElementById('appContainer');
+    const sidebarToggleBtn = document.getElementById('sidebarToggle');
+    const sidebarCloseBtn = document.getElementById('sidebarClose');
+    const sidebar = document.getElementById('sidebar');
+    const cartCount = document.getElementById('cartCount');
+    const cartInfo = document.querySelector('.cart-info');
+
+    function updateCartCount(count) {
+      cartCount.textContent = count;
+      cartInfo.setAttribute('aria-label', `View cart with ${count} item${count !== 1 ? 's' : ''}`);
+    }
+
+    let cartItems = 0;
+
+    // Simulate adding items to cart on product click
+    document.getElementById('productGrid').addEventListener('click', (e) => {
+      if(e.target.closest('.product-card')) {
+        cartItems++;
+        updateCartCount(cartItems);
+      }
+    });
+
+    sidebarToggleBtn.addEventListener('click', () => {
+      appContainer.classList.toggle('sidebar-open');
+      // Show/hide sidebar for accessibility
+      if(appContainer.classList.contains('sidebar-open')){
+        sidebar.hidden = false;
+        sidebar.focus();
+      } else {
+        sidebar.hidden = true;
+        sidebarToggleBtn.focus();
+      }
+    });
+
+    sidebarCloseBtn?.addEventListener('click', () => {
+      appContainer.classList.remove('sidebar-open');
+      sidebar.hidden = true;
+      sidebarToggleBtn.focus();
+    });
+
+    // Close sidebar if clicking outside on mobile
+    document.addEventListener('click', (e) => {
+      if(window.innerWidth <= 640) {
+        if (!appContainer.contains(e.target) && appContainer.classList.contains('sidebar-open')) {
+          appContainer.classList.remove('sidebar-open');
+          sidebar.hidden = true;
+        }
+      }
+    });
+
+    // Accessibility: close sidebar with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === "Escape" && appContainer.classList.contains('sidebar-open')) {
+        appContainer.classList.remove('sidebar-open');
+        sidebar.hidden = true;
+        sidebarToggleBtn.focus();
+      }
+    });
+
+    // Accessibility improvements for category filter list keyboard nav
+    const categories = document.querySelectorAll('aside.sidebar .categories li, aside.sidebar .filters li');
+    categories.forEach(cat => {
+      cat.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          cat.click();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+
+```
+
+🎨 **Generating images based on descriptions...**
+
+✅ **Images generated successfully! Here's your updated content:**
+
+
+The user wants a website frame and template for a grocery app, following the detailed app guidelines for a modern interactive game application, but adapted to a grocery app context. The main guidelines include:
+
+- Fully responsive, modern UI with:
+  - Header: showing score, level, lives/health, timer replaced by relevant grocery app info like cart summary, search bar, user profile
+  - Main: main content area with product display grid or list
+  - Sidebar: controls explanation, power-ups, achievements replaced by filters, categories, shopping list, or promotions (collapsible)
+  - Bottom: action buttons like cart, checkout, settings
+- Use modern material icons from google fonts
+- Use placeholder images from placehold.co with descriptive alt text
+- Use a single HTML file with inline CSS and JS
+- Implement a clean, modern, breathable UI with proper spacing and no overlapping elements
+- The final product is a grocery app website frame and template that showcases product browsing with a modern look
+
+Plan:
+- Create a single HTML file "grocery-app.html"
+- Header with logo, search bar, cart summary (items count and total)
+- Sidebar collapsible for categories and filters
+- Main content area: product grid with placeholder images and product cards
+- Bottom sticky action bar with buttons for cart, checkout, and settings (using material icons)
+- Responsive layout with single column on mobile, sidebar on tablet and desktop
+- Use Google Material Icons via CDN
+- Use placeholder images from placehold.co with detailed alt text
+- Smooth modern UI design referencing the app guidelines but simplified for a grocery app
+- Include minimal JS for sidebar toggle and maybe cart count update simulation
+- Use modern typography (Inter from Google Fonts)
+- Include keyboard, mouse, and touch friendly UI controls
+
+No backend is required; it's a frame and template only.
+
+Dependent files: None (single file)
+Follow-up: The user can open the file in browser to view the grocery app template frame.
+
+I will proceed to create this single HTML file with all CSS and JS inline.
+
+
+`grocery-app.html`
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Modern Grocery App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    /* Reset and base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #f9fafb;
+      color: #111827;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      height: 100vh;
+      overflow: hidden;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    /* Layout: grid with header, sidebar, main, bottom bar */
+    .app-container {
+      display: grid;
+      grid-template-columns: 0 1fr; /* sidebar initially collapsed */
+      grid-template-rows: auto 1fr auto;
+      grid-template-areas:
+        "header header"
+        ". main"
+        "bottom bottom";
+      height: 100vh;
+      transition: grid-template-columns 0.3s ease;
+      overflow: hidden;
+    }
+    .app-container.sidebar-open {
+      grid-template-columns: 280px 1fr;
+      grid-template-areas:
+        "header header"
+        "sidebar main"
+        "bottom bottom";
+    }
+    header {
+      grid-area: header;
+      background: #2563eb;
+      color: white;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .logo {
+      font-weight: 700;
+      font-size: 1.5rem;
+      user-select: none;
+    }
+    .search-bar {
+      flex: 1 1 auto;
+      margin: 0 24px;
+      position: relative;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 10px 40px 10px 16px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      outline-offset: 2px;
+      box-shadow: 0 0 6px rgb(37 99 235 / 0.4);
+    }
+    .search-bar .material-icons {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #3b82f6;
+      cursor: pointer;
+      user-select: none;
+    }
+    .cart-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      position: relative;
+      user-select: none;
+    }
+    .cart-info .material-icons {
+      font-size: 28px;
+    }
+    .cart-count {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: #ef4444;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 4px rgb(239 68 68 / 0.7);
+    }
+    /* Sidebar */
+    aside.sidebar {
+      grid-area: sidebar;
+      background: #1e40af;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      overflow-y: auto;
+      user-select: none;
+    }
+    aside.sidebar h2 {
+      font-size: 1.25rem;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+    .categories, .filters {
+      margin-bottom: 32px;
+    }
+    .categories ul, .filters ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .categories li, .filters li {
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: background-color 0.25s ease;
+      user-select: none;
+      font-weight: 500;
+    }
+    .categories li:hover, .filters li:hover {
+      background: #2563eb;
+    }
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 28px;
+      padding: 8px;
+      margin-bottom: 24px;
+      cursor: pointer;
+      align-self: flex-end;
+      user-select: none;
+    }
+    /* Main */
+    main {
+      grid-area: main;
+      overflow-y: auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
+      gap: 24px;
+      background: #f3f4f6;
+    }
+    .product-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 16px rgb(0 0 0 / 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow 0.3s ease;
+    }
+    .product-card:hover {
+      box-shadow: 0 12px 24px rgb(37 99 235 / 0.3);
+      transform: translateY(-4px);
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+    .product-image {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      user-select: none;
+    }
+    .product-info {
+      padding: 16px;
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .product-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      color: #1f2937;
+      min-height: 44px;
+    }
+    .product-description {
+      font-size: 0.875rem;
+      color: #6b7280;
+      flex-grow: 1;
+      margin-bottom: 12px;
+    }
+    .product-price {
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: #2563eb;
+    }
+    /* Bottom bar with action buttons */
+    .bottom-bar {
+      grid-area: bottom;
+      background: #2563eb;
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      padding: 12px 0;
+      box-shadow: 0 -2px 8px rgb(0 0 0 / 0.15);
+      position: sticky;
+      bottom: 0;
+      user-select: none;
+      z-index: 10;
+    }
+    .bottom-bar button {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      min-width: 64px;
+      transition: color 0.3s ease;
+    }
+    .bottom-bar button:hover {
+      color: #3b82f6;
+    }
+    .bottom-bar button span {
+      font-size: 12px;
+      font-weight: 600;
+      user-select: none;
+    }
+    /* Responsive */
+    @media screen and (max-width: 1024px) {
+      .app-container.sidebar-open {
+        grid-template-columns: 220px 1fr;
+      }
+      aside.sidebar {
+        padding: 16px;
+      }
+      main {
+        padding: 16px;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fill,minmax(180px,1fr));
+      }
+      .product-image {
+        height: 140px;
+      }
+    }
+    @media screen and (max-width: 640px) {
+      .app-container, .app-container.sidebar-open {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "header"
+          "main"
+          "bottom";
+      }
+      aside.sidebar {
+        position: fixed;
+        top: 64px;
+        left: 0;
+        bottom: 56px;
+        width: 240px;
+        background: #1e40af;
+        padding: 16px;
+        transform: translateX(-260px);
+        transition: transform 0.3s ease;
+        z-index: 30;
+      }
+      .app-container.sidebar-open aside.sidebar {
+        transform: translateX(0);
+      }
+      header {
+        padding: 0 16px;
+      }
+      .search-bar {
+        margin: 0 12px;
+      }
+      main {
+        padding: 16px 12px;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .product-image {
+        height: 120px;
+      }
+      .bottom-bar {
+        padding: 8px 0;
+        gap: 16px;
+      }
+      .bottom-bar button {
+        font-size: 24px;
+        min-width: 48px;
+      }
+    }
+    /* Scroll bar style for sidebar */
+    aside.sidebar::-webkit-scrollbar {
+      width: 8px;
+    }
+    aside.sidebar::-webkit-scrollbar-thumb {
+      background: #2563eb;
+      border-radius: 4px;
+    }
+    /* Focus outline */
+    input:focus,
+    button:focus,
+    li:focus {
+      outline-offset: 2px;
+      outline: 2px solid #93c5fd;
+      outline-offset: 3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container" id="appContainer">
+    <header>
+      <button class="material-icons sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar" title="Toggle sidebar">menu</button>
+      <div class="logo" aria-label="Grocery App Logo" role="heading" aria-level="1">FreshMart</div>
+      <div class="search-bar" role="search">
+        <input type="search" id="searchInput" placeholder="Search groceries..." aria-label="Search groceries" />
+        <span class="material-icons" id="searchIcon" aria-hidden="true">search</span>
+      </div>
+      <div class="cart-info" role="button" tabindex="0" aria-label="View cart with 0 items">
+        <span class="material-icons" aria-hidden="true">shopping_cart</span>
+        <div class="cart-count" id="cartCount" aria-live="polite" aria-atomic="true">0</div>
+      </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar" aria-label="Product categories and filters" hidden>
+      <button class="material-icons sidebar-toggle" id="sidebarClose" aria-label="Close sidebar" title="Close sidebar">close</button>
+      <section class="categories" aria-label="Product categories">
+        <h2>Categories</h2>
+        <ul>
+          <li tabindex="0">Fruits</li>
+          <li tabindex="0">Vegetables</li>
+          <li tabindex="0">Dairy</li>
+          <li tabindex="0">Meat & Fish</li>
+          <li tabindex="0">Bakery</li>
+          <li tabindex="0">Snacks</li>
+          <li tabindex="0">Beverages</li>
+        </ul>
+      </section>
+      <section class="filters" aria-label="Filter options">
+        <h2>Filters</h2>
+        <ul>
+          <li tabindex="0">On Sale</li>
+          <li tabindex="0">Organic</li>
+          <li tabindex="0">New</li>
+          <li tabindex="0">Best Sellers</li>
+          <li tabindex="0">Gluten Free</li>
+        </ul>
+      </section>
+    </aside>
+
+    <main id="productGrid" tabindex="0" aria-label="Products listing">
+      <article class="product-card" tabindex="0" aria-label="Fresh Red Apples, price $3.99 per lb">
+        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/a46b8c19-554e-47ac-9b7d-9896d53f1f0d.png" alt="Fresh Red Apples in a basket with bright red color" class="product-image" loading="lazy" />
+        <div class="product-info">
+          <h3 class="product-title">Fresh Red Apples</h3>
+          <p class="product-description">Crisp and juicy apples, perfect for snacking or baking.</p>
+          <div class="product-price" aria-label="Price 3.99 dollars per pound">$3.99 / lb</div>
+        </div>
+      </article>
+      <article class="product-card" tabindex="0" aria-label="Organic Bananas, price $1.29 per lb">
+        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/af9ee397-bd5e-45db-ae6f-5b12f0226766.png" alt="Organic yellow bananas bunch on white background" class="product-image" loading="lazy" />
+        <div class="product-info">
+          <h3 class="product-title">Organic Bananas</h3>
+          <p class="product-description">Sweet and ripe organic bananas, perfect for smoothies and snacks.</p>
+          <div class="product-price" aria-label="Price 1.29 dollars per pound">$1.29 / lb</div>
+        </div>
+      </article>
+      <article class="product-card" tabindex="0" aria-label="Fresh Carrots, price $2.50 per bunch">
+        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/0f3b5f03-9e77-4c0b-84ca-a815dffbf4e7.png" alt="Bright orange fresh carrots with green tops" class="product-image" loading="lazy" />
+        <div class="product-info">
+          <h3 class="product-title">Fresh Carrots</h3>
+          <p class="product-description">Crunchy and sweet carrots sourced locally, packed with nutrients.</p>
+          <div class="product-price" aria-label="Price 2.50 dollars per bunch">$2.50 / bunch</div>
+        </div>
+      </article>
+      <article class="product-card" tabindex="0" aria-label="Whole Milk, price $4.50 per gallon">
+        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/6ee579bb-3ab2-421a-8932-61172507735a.png" alt="Bottle of whole milk with blue cap" class="product-image" loading="lazy" />
+        <div class="product-info">
+          <h3 class="product-title">Whole Milk</h3>
+          <p class="product-description">Rich and creamy whole milk from grass-fed cows.</p>
+          <div class="product-price" aria-label="Price 4.50 dollars per gallon">$4.50 / gal</div>
+        </div>
+      </article>
+      <article class="product-card" tabindex="0" aria-label="Whole Wheat Bread, price $3.25 per loaf">
+        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/e20885c7-a0bb-44b9-a376-0e9599b212e0.png" alt="Freshly baked whole wheat bread loaf" class="product-image" loading="lazy" />
+        <div class="product-info">
+          <h3 class="product-title">Whole Wheat Bread</h3>
+          <p class="product-description">Soft and healthy whole wheat bread perfect for sandwiches.</p>
+          <div class="product-price" aria-label="Price 3.25 dollars per loaf">$3.25 / loaf</div>
+        </div>
+      </article>
+      <article class="product-card" tabindex="0" aria-label="Sparkling Water, price $1.50 per bottle">
+        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/140ffb32-e07a-440d-b6be-e7149ed8f6a9.png" alt="Clear bottle of sparkling water with bubbles" class="product-image" loading="lazy" />
+        <div class="product-info">
+          <h3 class="product-title">Sparkling Water</h3>
+          <p class="product-description">Refreshing sparkling water with a hint of natural minerals.</p>
+          <div class="product-price" aria-label="Price 1.50 dollars per bottle">$1.50 / bottle</div>
+        </div>
+      </article>
+    </main>
+
+    <nav class="bottom-bar" role="navigation" aria-label="Bottom action bar">
+      <button aria-label="View Cart" id="btnCart">
+        <span class="material-icons" aria-hidden="true">shopping_cart</span>
+        <span>Cart</span>
+      </button>
+      <button aria-label="Checkout" id="btnCheckout">
+        <span class="material-icons" aria-hidden="true">payment</span>
+        <span>Checkout</span>
+      </button>
+      <button aria-label="Settings" id="btnSettings">
+        <span class="material-icons" aria-hidden="true">settings</span>
+        <span>Settings</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    // Sidebar toggle for desktop and mobile
+    const appContainer = document.getElementById('appContainer');
+    const sidebarToggleBtn = document.getElementById('sidebarToggle');
+    const sidebarCloseBtn = document.getElementById('sidebarClose');
+    const sidebar = document.getElementById('sidebar');
+    const cartCount = document.getElementById('cartCount');
+    const cartInfo = document.querySelector('.cart-info');
+
+    function updateCartCount(count) {
+      cartCount.textContent = count;
+      cartInfo.setAttribute('aria-label', `View cart with ${count} item${count !== 1 ? 's' : ''}`);
+    }
+
+    let cartItems = 0;
+
+    // Simulate adding items to cart on product click
+    document.getElementById('productGrid').addEventListener('click', (e) => {
+      if(e.target.closest('.product-card')) {
+        cartItems++;
+        updateCartCount(cartItems);
+      }
+    });
+
+    sidebarToggleBtn.addEventListener('click', () => {
+      appContainer.classList.toggle('sidebar-open');
+      // Show/hide sidebar for accessibility
+      if(appContainer.classList.contains('sidebar-open')){
+        sidebar.hidden = false;
+        sidebar.focus();
+      } else {
+        sidebar.hidden = true;
+        sidebarToggleBtn.focus();
+      }
+    });
+
+    sidebarCloseBtn?.addEventListener('click', () => {
+      appContainer.classList.remove('sidebar-open');
+      sidebar.hidden = true;
+      sidebarToggleBtn.focus();
+    });
+
+    // Close sidebar if clicking outside on mobile
+    document.addEventListener('click', (e) => {
+      if(window.innerWidth <= 640) {
+        if (!appContainer.contains(e.target) && appContainer.classList.contains('sidebar-open')) {
+          appContainer.classList.remove('sidebar-open');
+          sidebar.hidden = true;
+        }
+      }
+    });
+
+    // Accessibility: close sidebar with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === "Escape" && appContainer.classList.contains('sidebar-open')) {
+        appContainer.classList.remove('sidebar-open');
+        sidebar.hidden = true;
+        sidebarToggleBtn.focus();
+      }
+    });
+
+    // Accessibility improvements for category filter list keyboard nav
+    const categories = document.querySelectorAll('aside.sidebar .categories li, aside.sidebar .filters li');
+    categories.forEach(cat => {
+      cat.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          cat.click();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+
+```

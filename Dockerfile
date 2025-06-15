@@ -1,12 +1,16 @@
-FROM php:8.2-apache
+# Use official lightweight nginx image
+FROM nginx:alpine
 
-RUN a2enmod rewrite
-RUN docker-php-ext-install mysqli pdo pdo_mysql
+# Remove default nginx index.html
+RUN rm /usr/share/nginx/html/index.html
 
-COPY . /var/www/html/
-RUN chown -R www-data:www-data /var/www/html
+# Copy the grocery app HTML file to nginx public folder
+COPY grocery-app.html /usr/share/nginx/html/index.html
 
+# Expose port 80 for web server
 EXPOSE 80
-CMD ["apache2-foreground"]
+
+# Start nginx in foreground (default CMD)
+CMD ["nginx", "-g", "daemon off;"]
 
 
